@@ -83,10 +83,6 @@ nav a.active {
     text-decoration: underline;
 }
 
-main {
-    margin-bottom: 40px;
-}
-
 /* кнопка */
 .btn {
     display: inline-block;
@@ -206,7 +202,7 @@ textarea {
     border-radius: 5px;
 }
 
-/* дневник */
+/* дневник и вход */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -226,6 +222,7 @@ th {
 
 /* подвал */
 footer {
+    margin-top: 40px;
     padding: 10px 0;
     background-color: #eeeeee;
     font-size: 0.9rem;
@@ -241,7 +238,7 @@ footer {
 }
 
 @media (min-width: 900px) {
-    .diary {
+    .two-columns {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 40px;

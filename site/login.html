@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Вход — GymLog</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="container header-inner">
+            <a href="index.html"><img src="img/logo.svg" alt="GymLog — на главную" width="100" height="44"></a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="diary.html">Дневник</a></li>
+                    <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="login.html" class="active">Вход</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>Вход</h1>
+        <p>Войдите, чтобы вести свой дневник тренировок. Если аккаунта ещё нет, зарегистрируйтесь.</p>
+
+        <div class="two-columns">
+            <section>
+                <h2>Войти</h2>
+                <form id="login-form" action="#" method="post" novalidate>
+                    <label for="login-email">Почта</label>
+                    <input type="email" id="login-email" name="email" required aria-describedby="login-email-error">
+                    <p class="error" id="login-email-error"></p>
+
+                    <label for="login-password">Пароль</label>
+                    <input type="password" id="login-password" name="password" required aria-describedby="login-password-error">
+                    <p class="error" id="login-password-error"></p>
+
+                    <button type="submit" class="btn">Войти</button>
+                    <p class="error" id="login-result"></p>
+                </form>
+            </section>
+
+            <section>
+                <h2>Регистрация</h2>
+                <form id="register-form" action="#" method="post" novalidate>
+                    <label for="reg-name">Имя</label>
+                    <input type="text" id="reg-name" name="name" required aria-describedby="reg-name-error">
+                    <p class="error" id="reg-name-error"></p>
+
+                    <label for="reg-email">Почта</label>
+                    <input type="email" id="reg-email" name="email" required aria-describedby="reg-email-error">
+                    <p class="error" id="reg-email-error"></p>
+
+                    <label for="reg-password">Пароль (от 6 символов)</label>
+                    <input type="password" id="reg-password" name="password" required aria-describedby="reg-password-error">
+                    <p class="error" id="reg-password-error"></p>
+
+                    <button type="submit" class="btn">Зарегистрироваться</button>
+                    <p class="error" id="register-result"></p>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 GymLog. Учебный проект.</p>
+        </div>
+    </footer>
+</body>
+</html>

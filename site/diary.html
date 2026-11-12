@@ -17,6 +17,7 @@
                     <li><a href="catalog.html">Каталог</a></li>
                     <li><a href="diary.html" class="active">Дневник</a></li>
                     <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="login.html">Вход</a></li>
                 </ul>
             </nav>
         </div>
@@ -24,126 +25,68 @@
 
     <main class="container">
         <h1>Мой дневник</h1>
-        <p>Пока новые записи добавляются только в таблицу на странице и пропадают после обновления. Сохранение будет, когда появится сервер.</p>
+        <p id="diary-status">Загрузка...</p>
 
-        <div class="diary">
-            <section>
-                <h2>Новая запись</h2>
-                <form id="diary-form" action="#" method="post" novalidate>
-                    <label for="date">Дата</label>
-                    <input type="date" id="date" name="date" required aria-describedby="date-error">
-                    <p class="error" id="date-error"></p>
+        <!-- показывается, если пользователь не вошёл -->
+        <p id="diary-guest" class="is-hidden">Чтобы вести дневник, <a href="login.html">войдите или зарегистрируйтесь</a>.</p>
 
-                    <label for="exercise">Упражнение</label>
-                    <select id="exercise" name="exercise" required aria-describedby="exercise-error">
-                        <option value="">Выберите упражнение</option>
-                        <option value="1">Приседания со штангой</option>
-                        <option value="2">Жим лёжа</option>
-                        <option value="3">Становая тяга</option>
-                        <option value="4">Подтягивания</option>
-                        <option value="5">Отжимания на брусьях</option>
-                        <option value="6">Жим стоя</option>
-                        <option value="7">Тяга штанги в наклоне</option>
-                        <option value="8">Выпады с гантелями</option>
-                        <option value="9">Румынская тяга</option>
-                        <option value="10">Жим гантелей на наклонной скамье</option>
-                        <option value="11">Тяга верхнего блока</option>
-                        <option value="12">Сгибание рук со штангой</option>
-                        <option value="13">Французский жим</option>
-                        <option value="14">Планка</option>
-                        <option value="15">Подъём на носки</option>
-                    </select>
-                    <p class="error" id="exercise-error"></p>
+        <!-- показывается после входа -->
+        <div id="diary-content" class="is-hidden">
+            <div class="two-columns">
+                <section>
+                    <h2>Новая запись</h2>
+                    <form id="diary-form" action="#" method="post" novalidate>
+                        <label for="date">Дата</label>
+                        <input type="date" id="date" name="date" required aria-describedby="date-error">
+                        <p class="error" id="date-error"></p>
 
-                    <label for="sets">Подходы</label>
-                    <input type="number" id="sets" name="sets" min="1" max="10" required aria-describedby="sets-error">
-                    <p class="error" id="sets-error"></p>
+                        <label for="exercise">Упражнение</label>
+                        <select id="exercise" name="exercise" required aria-describedby="exercise-error">
+                            <option value="">Выберите упражнение</option>
+                        </select>
+                        <p class="error" id="exercise-error"></p>
 
-                    <label for="reps">Повторы</label>
-                    <input type="number" id="reps" name="reps" min="1" max="50" required aria-describedby="reps-error">
-                    <p class="error" id="reps-error"></p>
+                        <label for="sets">Подходы</label>
+                        <input type="number" id="sets" name="sets" min="1" max="10" required aria-describedby="sets-error">
+                        <p class="error" id="sets-error"></p>
 
-                    <label for="weight">Вес, кг</label>
-                    <input type="number" id="weight" name="weight" min="0" max="500" step="0.5" aria-describedby="weight-error">
-                    <p class="error" id="weight-error"></p>
+                        <label for="reps">Повторы</label>
+                        <input type="number" id="reps" name="reps" min="1" max="50" required aria-describedby="reps-error">
+                        <p class="error" id="reps-error"></p>
 
-                    <button type="submit" class="btn">Сохранить</button>
-                    <p class="result" id="diary-result"></p>
-                </form>
-            </section>
+                        <label for="weight">Вес, кг</label>
+                        <input type="number" id="weight" name="weight" min="0" max="500" step="0.5" aria-describedby="weight-error">
+                        <p class="error" id="weight-error"></p>
 
-            <section>
-                <h2>Итог за неделю</h2>
-                <p>С 6 по 12 ноября 2026:</p>
-                <ul>
-                    <li>Тренировок: 3</li>
-                    <li>Подходов: 28</li>
-                    <li>Поднято всего: 11 850 кг</li>
-                </ul>
-            </section>
+                        <button type="submit" class="btn">Сохранить</button>
+                        <p class="result" id="diary-result"></p>
+                    </form>
+                </section>
+
+                <section>
+                    <h2>Итог за 7 дней</h2>
+                    <ul>
+                        <li>Тренировок: <span id="sum-workouts">0</span></li>
+                        <li>Подходов: <span id="sum-sets">0</span></li>
+                        <li>Поднято всего: <span id="sum-weight">0</span> кг</li>
+                    </ul>
+                </section>
+            </div>
+
+            <h2>Мои записи</h2>
+            <p id="no-records" class="is-hidden">Записей пока нет. Добавьте первую тренировку.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Упражнение</th>
+                        <th>Подходы × повторы</th>
+                        <th>Вес</th>
+                    </tr>
+                </thead>
+                <tbody id="records"></tbody>
+            </table>
         </div>
-
-        <h2>Последние записи</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Дата</th>
-                    <th>Упражнение</th>
-                    <th>Подходы × повторы</th>
-                    <th>Вес</th>
-                </tr>
-            </thead>
-            <tbody id="records">
-                <tr>
-                    <td><time datetime="2026-11-11">11.11.2026</time></td>
-                    <td>Приседания со штангой</td>
-                    <td>4 × 8</td>
-                    <td>70 кг</td>
-                </tr>
-                <tr>
-                    <td><time datetime="2026-11-11">11.11.2026</time></td>
-                    <td>Жим лёжа</td>
-                    <td>4 × 8</td>
-                    <td>60 кг</td>
-                </tr>
-                <tr>
-                    <td><time datetime="2026-11-11">11.11.2026</time></td>
-                    <td>Тяга штанги в наклоне</td>
-                    <td>3 × 10</td>
-                    <td>50 кг</td>
-                </tr>
-                <tr>
-                    <td><time datetime="2026-11-09">09.11.2026</time></td>
-                    <td>Становая тяга</td>
-                    <td>3 × 5</td>
-                    <td>90 кг</td>
-                </tr>
-                <tr>
-                    <td><time datetime="2026-11-09">09.11.2026</time></td>
-                    <td>Жим стоя</td>
-                    <td>3 × 8</td>
-                    <td>35 кг</td>
-                </tr>
-                <tr>
-                    <td><time datetime="2026-11-09">09.11.2026</time></td>
-                    <td>Подтягивания</td>
-                    <td>3 × 8</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <td><time datetime="2026-11-07">07.11.2026</time></td>
-                    <td>Приседания со штангой</td>
-                    <td>4 × 8</td>
-                    <td>67,5 кг</td>
-                </tr>
-                <tr>
-                    <td><time datetime="2026-11-07">07.11.2026</time></td>
-                    <td>Жим лёжа</td>
-                    <td>4 × 8</td>
-                    <td>57,5 кг</td>
-                </tr>
-            </tbody>
-        </table>
     </main>
 
     <footer>

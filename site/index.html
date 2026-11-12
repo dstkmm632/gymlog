@@ -17,6 +17,7 @@
                     <li><a href="catalog.html">Каталог</a></li>
                     <li><a href="diary.html">Дневник</a></li>
                     <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="login.html">Вход</a></li>
                 </ul>
             </nav>
         </div>
@@ -34,56 +35,8 @@
 
         <section>
             <h2>Популярные упражнения</h2>
-            <ul class="cards">
-                <li>
-                    <article class="card">
-                        <img src="img/exercises/squat.svg" alt="Схема приседания со штангой на плечах в нижней точке" width="400" height="300" loading="lazy">
-                        <h3><a href="exercises/squat.html">Приседания со штангой</a></h3>
-                        <p>Одно из главных упражнений для ног.</p>
-                        <p class="card-info">Ноги, штанга</p>
-                    </article>
-                </li>
-                <li>
-                    <article class="card">
-                        <img src="img/exercises/bench-press.svg" alt="Схема жима лёжа: штанга над грудью на прямых руках" width="400" height="300" loading="lazy">
-                        <h3><a href="exercises/bench-press.html">Жим лёжа</a></h3>
-                        <p>Базовое упражнение на грудь.</p>
-                        <p class="card-info">Грудь, штанга</p>
-                    </article>
-                </li>
-                <li>
-                    <article class="card">
-                        <img src="img/exercises/deadlift.svg" alt="Схема становой тяги: наклон к штанге, лежащей на полу" width="400" height="300" loading="lazy">
-                        <h3><a href="exercises/deadlift.html">Становая тяга</a></h3>
-                        <p>Подъём штанги с пола.</p>
-                        <p class="card-info">Спина, штанга</p>
-                    </article>
-                </li>
-                <li>
-                    <article class="card">
-                        <img src="img/exercises/pull-up.svg" alt="Схема подтягивания на турнике" width="400" height="300" loading="lazy">
-                        <h3><a href="exercises/pull-up.html">Подтягивания</a></h3>
-                        <p>Подтягивание тела к перекладине.</p>
-                        <p class="card-info">Спина, турник</p>
-                    </article>
-                </li>
-                <li>
-                    <article class="card">
-                        <img src="img/exercises/overhead-press.svg" alt="Схема жима штанги стоя над головой" width="400" height="300" loading="lazy">
-                        <h3><a href="exercises/overhead-press.html">Жим стоя</a></h3>
-                        <p>Жим штанги над головой стоя.</p>
-                        <p class="card-info">Плечи, штанга</p>
-                    </article>
-                </li>
-                <li>
-                    <article class="card">
-                        <img src="img/exercises/plank.svg" alt="Схема планки на предплечьях" width="400" height="300" loading="lazy">
-                        <h3><a href="exercises/plank.html">Планка</a></h3>
-                        <p>Статическое упражнение: держать тело ровной линией на предплечьях.</p>
-                        <p class="card-info">Пресс, без снаряжения</p>
-                    </article>
-                </li>
-            </ul>
+            <p id="popular-status">Загрузка упражнений...</p>
+            <ul class="cards" id="popular-list"></ul>
             <p><a href="catalog.html">Все упражнения</a></p>
         </section>
     </main>
