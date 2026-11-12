@@ -153,6 +153,30 @@ textarea {
     font-family: inherit;
 }
 
+/* ошибки в формах */
+.error {
+    margin: -10px 0 10px;
+    color: #b00020;
+    font-size: 0.9rem;
+}
+
+.result {
+    color: var(--green);
+    font-weight: bold;
+}
+
+.is-hidden {
+    display: none;
+}
+
+/* погода на главной */
+.weather {
+    margin: 20px 0;
+    padding: 1px 15px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+}
+
 /* фильтр в каталоге */
 .filter {
     display: flex;
