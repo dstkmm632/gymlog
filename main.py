@@ -2,6 +2,7 @@
 # Запуск: uvicorn main:app --reload
 
 import os
+import secrets
 import sqlite3
 from datetime import date
 from typing import Optional
@@ -16,8 +17,9 @@ from database import create_database, get_connection
 
 app = FastAPI(title="GymLog")
 
-# ключ, которым подписывается cookie с сессией
-SECRET_KEY = os.environ.get("SECRET_KEY", "gymlog-local-secret")
+# ключ, которым подписывается cookie с сессией, берётся из переменной окружения
+# если переменной нет (локальный запуск), создаётся случайный ключ
+SECRET_KEY = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
 # при запуске создаём таблицы и заполняем упражнения

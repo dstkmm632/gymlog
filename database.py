@@ -2,9 +2,14 @@
 
 import os
 import sqlite3
+from datetime import date, timedelta
 
-# файл базы лежит рядом с этим файлом
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "gymlog.db")
+import bcrypt
+
+# путь к файлу базы берётся из переменной окружения DB_PATH,
+# если её нет - файл лежит рядом с этим файлом
+DEFAULT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "gymlog.db")
+DB_PATH = os.environ.get("DB_PATH", DEFAULT_PATH)
 
 
 def get_connection():
@@ -15,6 +20,11 @@ def get_connection():
 
 
 def create_database():
+    # создаём папку для базы, если её нет (например, /data на сервере)
+    folder = os.path.dirname(DB_PATH)
+    if folder:
+        os.makedirs(folder, exist_ok=True)
+
     conn = get_connection()
 
     conn.execute("""
@@ -70,6 +80,42 @@ def create_database():
         """, EXERCISES)
 
     conn.commit()
+    conn.close()
+
+    create_test_user()
+
+
+# тестовый аккаунт для проверки, почта и пароль задаются переменными окружения
+def create_test_user():
+    email = os.environ.get("TEST_EMAIL")
+    password = os.environ.get("TEST_PASSWORD")
+    if not email or not password:
+        return
+
+    conn = get_connection()
+    user = conn.execute("SELECT id FROM users WHERE email = ?", (email,)).fetchone()
+
+    if user is None:
+        password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        cursor = conn.execute(
+            "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+            ("Тестовый пользователь", email, password_hash),
+        )
+        user_id = cursor.lastrowid
+
+        # несколько примерных записей, чтобы дневник не был пустым
+        today = date.today()
+        examples = [
+            (user_id, 1, str(today - timedelta(days=1)), 4, 8, 60),
+            (user_id, 2, str(today - timedelta(days=1)), 4, 8, 50),
+            (user_id, 4, str(today - timedelta(days=3)), 3, 6, None),
+        ]
+        conn.executemany(
+            "INSERT INTO records (user_id, exercise_id, date, sets, reps, weight) VALUES (?, ?, ?, ?, ?, ?)",
+            examples,
+        )
+        conn.commit()
+
     conn.close()
 
 
