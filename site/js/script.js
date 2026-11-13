@@ -1,9 +1,34 @@
 // скрипты для сайта GymLog
 
 // показывает текст ошибки под полем (если текст пустой - ошибка пропадает)
+// и подсвечивает само поле красной рамкой
 function showError(id, text) {
     const error = document.querySelector('#' + id + '-error');
     error.textContent = text;
+
+    const input = document.querySelector('#' + id);
+    if (text === '') {
+        input.classList.remove('has-error');
+    } else {
+        input.classList.add('has-error');
+    }
+}
+
+// проверка почты: только латиница (английская раскладка)
+// возвращает текст ошибки или пустую строку, если всё хорошо
+function checkEmail(email) {
+    if (email === '') {
+        return 'Введите почту';
+    }
+    // русский домен (например, почта.рф) браузер сам превращает в xn--...,
+    // поэтому такую почту тоже считаем введённой не латиницей
+    if (/[а-яё]/i.test(email) || email.toLowerCase().includes('xn--')) {
+        return 'Почту нужно вводить латиницей (английская раскладка)';
+    }
+    if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email)) {
+        return 'Почта введена неправильно, пример: ivan@mail.ru';
+    }
+    return '';
 }
 
 // отправляет данные на сервер в формате JSON
@@ -25,6 +50,38 @@ async function getErrorText(response) {
     return 'Проверьте введённые данные';
 }
 
+// дата приходит как 2026-11-12, делаем 12.11.2026
+function niceDate(text) {
+    const parts = text.split('-');
+    return parts[2] + '.' + parts[1] + '.' + parts[0];
+}
+
+// вес с запятой: 62.5 -> «62,5»
+function kg(value) {
+    return String(value).replace('.', ',');
+}
+
+// сегодняшняя дата в виде 2026-11-12 (для полей с датой)
+function todayText() {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return now.getFullYear() + '-' + month + '-' + day;
+}
+
+// 1 день, 2 дня, 5 дней
+function plural(n, one, few, many) {
+    const n10 = n % 10;
+    const n100 = n % 100;
+    if (n10 === 1 && n100 !== 11) {
+        return one;
+    }
+    if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) {
+        return few;
+    }
+    return many;
+}
+
 const LEVELS = ['', 'новичок', 'средний', 'опытный'];
 
 // создаёт карточку упражнения для списка
@@ -43,6 +100,9 @@ function createCard(exercise) {
     img.height = 300;
     img.loading = 'lazy';
 
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
     const title = document.createElement('h3');
     const link = document.createElement('a');
     link.href = 'exercise.html?id=' + exercise.id;
@@ -52,11 +112,16 @@ function createCard(exercise) {
     const text = document.createElement('p');
     text.textContent = exercise.description;
 
-    const info = document.createElement('p');
-    info.className = 'card-info';
-    info.textContent = exercise.muscle_name + ', ' + LEVELS[exercise.level];
+    const muscle = document.createElement('span');
+    muscle.className = 'badge';
+    muscle.textContent = exercise.muscle_name;
 
-    article.append(img, title, text, info);
+    const level = document.createElement('span');
+    level.className = 'badge';
+    level.textContent = LEVELS[exercise.level];
+
+    body.append(title, text, muscle, level);
+    article.append(img, body);
     li.append(article);
     return li;
 }
@@ -69,6 +134,39 @@ async function loadExercises() {
     }
     return await response.json();
 }
+
+// заполняет выпадающий список упражнениями
+async function fillExerciseSelect(select) {
+    const exercises = await loadExercises();
+    exercises.sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+    });
+    for (const exercise of exercises) {
+        const option = document.createElement('option');
+        option.value = exercise.id;
+        option.textContent = exercise.name;
+        select.append(option);
+    }
+}
+
+
+// ===== меню: «Профиль» вместо «Вход», если пользователь вошёл =====
+
+async function updateMenu() {
+    const link = document.querySelector('#nav-login');
+    try {
+        const response = await fetch('/api/me');
+        const me = await response.json();
+        if (me.logged_in) {
+            link.textContent = 'Профиль';
+            link.href = 'profile.html';
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+updateMenu();
 
 
 // ===== форма обратной связи =====
@@ -91,14 +189,10 @@ if (feedbackForm) {
             showError('name', '');
         }
 
-        if (email === '') {
-            showError('email', 'Введите почту');
+        const emailError = checkEmail(email);
+        showError('email', emailError);
+        if (emailError !== '') {
             ok = false;
-        } else if (!email.includes('@') || !email.includes('.')) {
-            showError('email', 'Почта введена неправильно, пример: ivan@mail.ru');
-            ok = false;
-        } else {
-            showError('email', '');
         }
 
         if (message.length < 10) {
@@ -127,8 +221,8 @@ async function showPopular() {
     const status = document.querySelector('#popular-status');
     try {
         const exercises = await loadExercises();
-        // показываем первые 6 упражнений
-        for (const exercise of exercises.slice(0, 6)) {
+        // показываем первые 8 упражнений
+        for (const exercise of exercises.slice(0, 8)) {
             popularList.append(createCard(exercise));
         }
         status.classList.add('is-hidden');
@@ -143,16 +237,19 @@ if (popularList) {
 }
 
 
-// ===== каталог: загрузка, фильтр и сортировка =====
+// ===== каталог: загрузка, фильтр по группам мышц и сортировка =====
 
 const filterForm = document.querySelector('#filter-form');
 
 if (filterForm) {
     const list = document.querySelector('#exercise-list');
+    const chips = document.querySelectorAll('#muscle-chips .chip');
+
+    // группу мышц можно передать в адресе: catalog.html?muscle=legs
+    let muscle = new URLSearchParams(window.location.search).get('muscle') || '';
 
     function filterCards() {
-        const search = document.querySelector('#search').value.toLowerCase();
-        const muscle = document.querySelector('#muscle').value;
+        const search = document.querySelector('#search').value.toLowerCase().trim();
         const cards = list.querySelectorAll('li');
         let count = 0;
 
@@ -172,6 +269,34 @@ if (filterForm) {
             nothing.classList.remove('is-hidden');
         } else {
             nothing.classList.add('is-hidden');
+        }
+
+        document.querySelector('#found-title').textContent = 'Найдено упражнений: ' + count;
+    }
+
+    // подсвечиваем выбранную группу мышц
+    function selectChip() {
+        let muscleName = '';
+        for (const chip of chips) {
+            if (chip.dataset.muscle === muscle) {
+                chip.classList.add('active');
+                chip.setAttribute('aria-pressed', 'true');
+                muscleName = chip.textContent;
+            } else {
+                chip.classList.remove('active');
+                chip.setAttribute('aria-pressed', 'false');
+            }
+        }
+
+        // ссылка «Подобрать тренировку на эту группу»
+        const box = document.querySelector('#workout-link-box');
+        if (muscle === '') {
+            box.classList.add('is-hidden');
+        } else {
+            const link = document.querySelector('#workout-link');
+            link.href = 'workout.html?type=' + muscle;
+            link.textContent = 'Подобрать тренировку: ' + muscleName;
+            box.classList.remove('is-hidden');
         }
     }
 
@@ -204,10 +329,19 @@ if (filterForm) {
             }
             status.classList.add('is-hidden');
             sortCards();
+            filterCards();
         } catch (error) {
             console.log(error);
             status.textContent = 'Не удалось загрузить упражнения. Сервер не отвечает.';
         }
+    }
+
+    for (const chip of chips) {
+        chip.addEventListener('click', function () {
+            muscle = chip.dataset.muscle;
+            selectChip();
+            filterCards();
+        });
     }
 
     filterForm.addEventListener('submit', function (event) {
@@ -215,9 +349,9 @@ if (filterForm) {
         filterCards();
     });
     document.querySelector('#search').addEventListener('input', filterCards);
-    document.querySelector('#muscle').addEventListener('change', filterCards);
     document.querySelector('#sort').addEventListener('change', sortCards);
 
+    selectChip();
     showCatalog();
 }
 
@@ -254,6 +388,14 @@ async function showExercise() {
         document.title = exercise.name + ' — GymLog';
         exerciseName.textContent = exercise.name;
 
+        const badges = document.querySelector('#exercise-badges');
+        for (const text of [exercise.muscle_name, LEVELS[exercise.level]]) {
+            const badge = document.createElement('span');
+            badge.className = 'badge';
+            badge.textContent = text;
+            badges.append(badge);
+        }
+
         const img = document.createElement('img');
         img.className = 'exercise-img';
         img.src = 'img/exercises/' + exercise.image;
@@ -269,13 +411,13 @@ async function showExercise() {
             params += '\nДополнительно работают: ' + exercise.extra_muscles;
         }
         params += '\nСнаряжение: ' + exercise.equipment;
-        params += '\nУровень: ' + LEVELS[exercise.level];
         params += '\nРекомендация: ' + exercise.recommendation;
         fillList('#exercise-params', params);
 
         fillList('#exercise-steps', exercise.steps);
         fillList('#exercise-mistakes', exercise.mistakes);
 
+        document.querySelector('#exercise-workout').href = 'workout.html?type=' + exercise.muscle;
         document.querySelector('#exercise-info').classList.remove('is-hidden');
     } catch (error) {
         console.log(error);
@@ -301,11 +443,10 @@ if (loginForm) {
         const result = document.querySelector('#login-result');
         let ok = true;
 
-        if (email === '') {
-            showError('login-email', 'Введите почту');
+        const emailError = checkEmail(email);
+        showError('login-email', emailError);
+        if (emailError !== '') {
             ok = false;
-        } else {
-            showError('login-email', '');
         }
 
         if (password === '') {
@@ -315,6 +456,7 @@ if (loginForm) {
             showError('login-password', '');
         }
 
+        result.textContent = '';
         if (!ok) {
             return;
         }
@@ -352,11 +494,10 @@ if (registerForm) {
             showError('reg-name', '');
         }
 
-        if (!email.includes('@') || !email.includes('.')) {
-            showError('reg-email', 'Почта введена неправильно');
+        const emailError = checkEmail(email);
+        showError('reg-email', emailError);
+        if (emailError !== '') {
             ok = false;
-        } else {
-            showError('reg-email', '');
         }
 
         if (password.length < 6 || password.length > 50) {
@@ -366,6 +507,7 @@ if (registerForm) {
             showError('reg-password', '');
         }
 
+        result.textContent = '';
         if (!ok) {
             return;
         }
@@ -373,8 +515,8 @@ if (registerForm) {
         try {
             const response = await sendData('/api/register', { name: name, email: email, password: password });
             if (response.ok) {
-                // после регистрации сервер сразу выполняет вход
-                window.location.href = 'diary.html';
+                // после регистрации сервер сразу выполняет вход, открываем профиль
+                window.location.href = 'profile.html?new=1';
             } else {
                 result.textContent = await getErrorText(response);
             }
@@ -402,20 +544,16 @@ function showRecords(records) {
     }
 
     for (const record of records) {
-        // дата приходит как 2026-11-12, делаем 12.11.2026
-        const parts = record.date.split('-');
-        const niceDate = parts[2] + '.' + parts[1] + '.' + parts[0];
-
-        let weightText = '—';
+        // 4 × 8, 50 кг (вес можно не указывать)
+        let resultText = record.sets + ' × ' + record.reps;
         if (record.weight !== null) {
-            weightText = record.weight + ' кг';
+            resultText += ', ' + kg(record.weight) + '\u00a0кг';
         }
 
         const row = document.createElement('tr');
-        addCell(row, niceDate);
+        addCell(row, niceDate(record.date));
         addCell(row, record.exercise);
-        addCell(row, record.sets + ' × ' + record.reps);
-        addCell(row, weightText);
+        addCell(row, resultText);
         table.append(row);
     }
 
@@ -477,17 +615,9 @@ async function openDiary() {
 
         const records = await response.json();
         document.querySelector('#diary-content').classList.remove('is-hidden');
+        document.querySelector('#date').value = todayText();
 
-        // список упражнений для формы
-        const select = document.querySelector('#exercise');
-        const exercises = await loadExercises();
-        for (const exercise of exercises) {
-            const option = document.createElement('option');
-            option.value = exercise.id;
-            option.textContent = exercise.name;
-            select.append(option);
-        }
-
+        await fillExerciseSelect(document.querySelector('#exercise'));
         showRecords(records);
     } catch (error) {
         console.log(error);
@@ -568,6 +698,7 @@ if (diaryForm) {
             if (response.ok) {
                 result.textContent = 'Запись сохранена';
                 diaryForm.reset();
+                document.querySelector('#date').value = todayText();
                 await loadRecords();
             } else {
                 result.textContent = await getErrorText(response);
@@ -580,33 +711,655 @@ if (diaryForm) {
 }
 
 
-// ===== погода на главной (Open-Meteo) =====
+// ===== профиль: данные о себе =====
 
-const weather = document.querySelector('#weather-text');
+const profileForm = document.querySelector('#profile-form');
 
-async function loadWeather() {
-    weather.textContent = 'Загрузка погоды...';
+// пустое поле -> null, иначе число
+function numberOrNull(value) {
+    if (value === '') {
+        return null;
+    }
+    return Number(value);
+}
+
+// проверяет число в поле: можно не заполнять, но если заполнено - от min до max
+function checkRange(id, min, max, text) {
+    const value = document.querySelector('#' + id).value;
+    if (value !== '' && (Number(value) < min || Number(value) > max)) {
+        showError(id, text);
+        return false;
+    }
+    showError(id, '');
+    return true;
+}
+
+async function openProfile() {
+    const status = document.querySelector('#profile-status');
 
     try {
-        // координаты Санкт-Петербурга
-        const url = 'https://api.open-meteo.com/v1/forecast?latitude=59.94&longitude=30.31&current=temperature_2m,wind_speed_10m&wind_speed_unit=ms';
-        const response = await fetch(url);
+        const response = await fetch('/api/profile');
+        status.classList.add('is-hidden');
 
+        if (response.status === 401) {
+            document.querySelector('#profile-guest').classList.remove('is-hidden');
+            return;
+        }
         if (!response.ok) {
             throw new Error('Ошибка сервера: ' + response.status);
         }
 
-        const data = await response.json();
-        const temp = Math.round(data.current.temperature_2m);
-        const wind = Math.round(data.current.wind_speed_10m);
+        const profile = await response.json();
+        document.querySelector('#profile-email').textContent = profile.email;
+        document.querySelector('#profile-name').value = profile.name;
+        if (profile.age !== null) {
+            document.querySelector('#profile-age').value = profile.age;
+        }
+        if (profile.height !== null) {
+            document.querySelector('#profile-height').value = profile.height;
+        }
+        if (profile.weight !== null) {
+            document.querySelector('#profile-weight').value = profile.weight;
+        }
 
-        weather.textContent = 'Сейчас ' + temp + ' °C, ветер ' + wind + ' м/с';
+        // после регистрации показываем подсказку
+        if (new URLSearchParams(window.location.search).get('new') === '1') {
+            document.querySelector('#profile-welcome').classList.remove('is-hidden');
+        }
+
+        document.querySelector('#profile-content').classList.remove('is-hidden');
+        document.querySelector('#st-date').value = todayText();
+
+        await fillExerciseSelect(document.querySelector('#st-exercise'));
+        await loadStrength();
     } catch (error) {
         console.log(error);
-        weather.textContent = 'Не удалось загрузить погоду. Проверьте интернет и обновите страницу.';
+        status.classList.remove('is-hidden');
+        status.textContent = 'Не удалось загрузить профиль. Сервер не отвечает.';
     }
 }
 
-if (weather) {
-    loadWeather();
+if (profileForm) {
+    openProfile();
+
+    profileForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const name = document.querySelector('#profile-name').value.trim();
+        const result = document.querySelector('#profile-result');
+        let ok = true;
+
+        if (name.length < 2 || name.length > 50) {
+            showError('profile-name', 'Имя должно быть от 2 до 50 символов');
+            ok = false;
+        } else {
+            showError('profile-name', '');
+        }
+
+        if (!checkRange('profile-age', 10, 100, 'Возраст должен быть от 10 до 100 лет')) {
+            ok = false;
+        }
+        if (!checkRange('profile-height', 100, 250, 'Рост должен быть от 100 до 250 см')) {
+            ok = false;
+        }
+        if (!checkRange('profile-weight', 30, 300, 'Вес должен быть от 30 до 300 кг')) {
+            ok = false;
+        }
+
+        result.classList.remove('is-error');
+        if (!ok) {
+            result.textContent = '';
+            return;
+        }
+
+        try {
+            const response = await sendData('/api/profile', {
+                name: name,
+                age: numberOrNull(document.querySelector('#profile-age').value),
+                height: numberOrNull(document.querySelector('#profile-height').value),
+                weight: numberOrNull(document.querySelector('#profile-weight').value)
+            });
+
+            if (response.ok) {
+                result.textContent = 'Данные сохранены';
+            } else {
+                result.classList.add('is-error');
+                result.textContent = await getErrorText(response);
+            }
+        } catch (error) {
+            console.log(error);
+            result.classList.add('is-error');
+            result.textContent = 'Не удалось сохранить данные. Сервер не отвечает.';
+        }
+    });
+
+    document.querySelector('#logout-btn').addEventListener('click', async function () {
+        await sendData('/api/logout', {});
+        window.location.href = 'index.html';
+    });
+}
+
+
+// ===== профиль: силовые показатели и прогресс =====
+
+const strengthForm = document.querySelector('#strength-form');
+
+// 60 кг × 5 или «свой вес × 8»
+function liftText(item) {
+    if (item.weight === 0) {
+        return 'свой вес × ' + item.reps;
+    }
+    return kg(item.weight) + '\u00a0кг × ' + item.reps;
+}
+
+// разница между первым и последним результатом
+function diffText(first, last) {
+    const weightDiff = last.weight - first.weight;
+    const repsDiff = last.reps - first.reps;
+
+    if (weightDiff !== 0) {
+        let text = (weightDiff > 0 ? '+' : '') + kg(weightDiff) + ' кг';
+        if (first.weight > 0) {
+            const percent = Math.round(weightDiff / first.weight * 100);
+            text += ' (' + (percent > 0 ? '+' : '') + percent + ' %)';
+        }
+        return { text: text, up: weightDiff > 0 };
+    }
+    if (repsDiff !== 0) {
+        const word = plural(Math.abs(repsDiff), 'повтор', 'повтора', 'повторов');
+        return { text: (repsDiff > 0 ? '+' : '') + repsDiff + ' ' + word, up: repsDiff > 0 };
+    }
+    return { text: 'без изменений', up: null };
+}
+
+function showStrength(items) {
+    const list = document.querySelector('#progress-list');
+    list.textContent = '';
+
+    if (items.length === 0) {
+        document.querySelector('#no-strength').classList.remove('is-hidden');
+        return;
+    }
+    document.querySelector('#no-strength').classList.add('is-hidden');
+
+    // группируем результаты по упражнениям (сервер уже отсортировал по дате)
+    const groups = {};
+    const order = [];
+    for (const item of items) {
+        if (!groups[item.exercise_id]) {
+            groups[item.exercise_id] = [];
+            order.push(item.exercise_id);
+        }
+        groups[item.exercise_id].push(item);
+    }
+
+    for (const id of order) {
+        const group = groups[id];
+        const first = group[0];
+        const last = group[group.length - 1];
+
+        const li = document.createElement('li');
+        li.className = 'progress-item';
+
+        const title = document.createElement('h3');
+        title.textContent = last.exercise;
+
+        const now = document.createElement('p');
+        now.textContent = 'Сейчас: ' + liftText(last) + ' (' + niceDate(last.date) + ')';
+
+        const info = document.createElement('p');
+        if (group.length === 1) {
+            info.className = 'muted';
+            info.textContent = 'Это первый результат. Добавьте новый позже, чтобы увидеть разницу.';
+        } else {
+            const days = Math.round((new Date(last.date) - new Date(first.date)) / 86400000);
+            const diff = diffText(first, last);
+
+            info.textContent = 'Было: ' + liftText(first) + ' (' + niceDate(first.date) + '). Изменение за ' +
+                days + ' ' + plural(days, 'день', 'дня', 'дней') + ': ';
+
+            const badge = document.createElement('span');
+            badge.className = 'diff';
+            if (diff.up === true) {
+                badge.classList.add('up');
+            } else if (diff.up === false) {
+                badge.classList.add('down');
+            }
+            badge.textContent = diff.text;
+            info.append(badge);
+        }
+
+        li.append(title, now, info, createHistory(group));
+        list.append(li);
+    }
+}
+
+// история результатов по одному упражнению (раскрывается по нажатию)
+function createHistory(group) {
+    const details = document.createElement('details');
+    const summary = document.createElement('summary');
+    summary.textContent = 'История (' + group.length + ')';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'table-wrap';
+    const table = document.createElement('table');
+    const head = document.createElement('tr');
+    for (const text of ['Дата', 'Результат', '']) {
+        const th = document.createElement('th');
+        th.textContent = text;
+        head.append(th);
+    }
+    table.append(head);
+
+    for (const item of group) {
+        const row = document.createElement('tr');
+        addCell(row, niceDate(item.date));
+        addCell(row, liftText(item));
+
+        const cell = document.createElement('td');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'link-btn';
+        button.textContent = 'Удалить';
+        button.addEventListener('click', function () {
+            deleteStrength(item.id);
+        });
+        cell.append(button);
+        row.append(cell);
+        table.append(row);
+    }
+
+    wrap.append(table);
+    details.append(summary, wrap);
+    return details;
+}
+
+async function loadStrength() {
+    const response = await fetch('/api/strength');
+    if (!response.ok) {
+        throw new Error('Ошибка сервера: ' + response.status);
+    }
+    showStrength(await response.json());
+}
+
+async function deleteStrength(id) {
+    try {
+        const response = await fetch('/api/strength/' + id, { method: 'DELETE' });
+        if (response.ok) {
+            await loadStrength();
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+if (strengthForm) {
+    strengthForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const exercise = document.querySelector('#st-exercise').value;
+        const date = document.querySelector('#st-date').value;
+        const weight = document.querySelector('#st-weight').value;
+        const reps = document.querySelector('#st-reps').value;
+        const result = document.querySelector('#strength-result');
+        let ok = true;
+
+        if (exercise === '') {
+            showError('st-exercise', 'Выберите упражнение');
+            ok = false;
+        } else {
+            showError('st-exercise', '');
+        }
+
+        if (date === '') {
+            showError('st-date', 'Выберите дату');
+            ok = false;
+        } else {
+            showError('st-date', '');
+        }
+
+        if (weight === '' || Number(weight) < 0 || Number(weight) > 500) {
+            showError('st-weight', 'Вес от 0 до 500 кг (0 — свой вес)');
+            ok = false;
+        } else {
+            showError('st-weight', '');
+        }
+
+        if (reps === '' || Number(reps) < 1 || Number(reps) > 100) {
+            showError('st-reps', 'Повторов должно быть от 1 до 100');
+            ok = false;
+        } else {
+            showError('st-reps', '');
+        }
+
+        result.classList.remove('is-error');
+        if (!ok) {
+            result.textContent = '';
+            return;
+        }
+
+        try {
+            const response = await sendData('/api/strength', {
+                exercise_id: Number(exercise),
+                date: date,
+                weight: Number(weight),
+                reps: Number(reps)
+            });
+
+            if (response.ok) {
+                result.textContent = 'Результат добавлен';
+                document.querySelector('#st-weight').value = '';
+                document.querySelector('#st-reps').value = '';
+                await loadStrength();
+            } else {
+                result.classList.add('is-error');
+                result.textContent = await getErrorText(response);
+            }
+        } catch (error) {
+            console.log(error);
+            result.classList.add('is-error');
+            result.textContent = 'Не удалось сохранить результат. Сервер не отвечает.';
+        }
+    });
+}
+
+
+// ===== подбор тренировки =====
+
+const workoutForm = document.querySelector('#workout-form');
+
+async function makeWorkout() {
+    const type = document.querySelector('#workout-type').value;
+    const minutes = document.querySelector('input[name="minutes"]:checked').value;
+    const error = document.querySelector('#workout-error');
+    error.textContent = '';
+
+    try {
+        const response = await fetch('/api/workout?type=' + type + '&minutes=' + minutes);
+        if (!response.ok) {
+            error.textContent = await getErrorText(response);
+            return;
+        }
+        showWorkout(await response.json());
+    } catch (err) {
+        console.log(err);
+        error.textContent = 'Не удалось подобрать тренировку. Сервер не отвечает.';
+    }
+}
+
+function showWorkout(workout) {
+    document.querySelector('#workout-title').textContent = 'Тренировка: ' + workout.type;
+
+    const count = workout.exercises.length;
+    document.querySelector('#workout-summary').textContent = 'Выбрано время: ' + workout.minutes + ' мин. ' +
+        count + ' ' + plural(count, 'упражнение', 'упражнения', 'упражнений') +
+        ', примерно ' + workout.total + ' мин вместе с разминкой и заминкой.';
+
+    const note = document.querySelector('#workout-note');
+    if (workout.note) {
+        note.textContent = workout.note;
+        note.classList.remove('is-hidden');
+    } else {
+        note.classList.add('is-hidden');
+    }
+
+    const list = document.querySelector('#workout-list');
+    list.textContent = '';
+
+    workout.exercises.forEach(function (exercise, index) {
+        const li = document.createElement('li');
+        li.className = 'workout-item';
+
+        const img = document.createElement('img');
+        img.src = 'img/exercises/' + exercise.image;
+        img.alt = exercise.image_alt;
+        img.width = 90;
+        img.height = 68;
+
+        const box = document.createElement('div');
+
+        const title = document.createElement('h3');
+        const link = document.createElement('a');
+        link.href = 'exercise.html?id=' + exercise.id;
+        link.textContent = (index + 1) + '. ' + exercise.name;
+        title.append(link);
+
+        const sets = document.createElement('p');
+        sets.className = 'workout-sets';
+        sets.textContent = exercise.sets + ' ' + plural(exercise.sets, 'подход', 'подхода', 'подходов') +
+            ' по ' + exercise.reps;
+
+        const rest = document.createElement('p');
+        rest.textContent = exercise.muscle_name + ' · отдых между подходами ' + exercise.rest;
+
+        box.append(title, sets, rest);
+        li.append(img, box);
+        list.append(li);
+    });
+
+    const result = document.querySelector('#workout-result');
+    result.classList.remove('is-hidden');
+    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+if (workoutForm) {
+    // тип тренировки можно передать в адресе: workout.html?type=legs
+    const type = new URLSearchParams(window.location.search).get('type');
+    if (type && document.querySelector('#workout-type option[value="' + type + '"]')) {
+        document.querySelector('#workout-type').value = type;
+    }
+
+    workoutForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        makeWorkout();
+    });
+    document.querySelector('#workout-again').addEventListener('click', makeWorkout);
+}
+
+
+// ===== КБЖУ продуктов (внешний источник: Open Food Facts) =====
+
+const foodForm = document.querySelector('#food-form');
+let foods = [];        // найденные продукты, чтобы пересчитать порцию без нового запроса
+const foodCache = {};  // уже найденные запросы: Open Food Facts разрешает не больше 10 поисков в минуту
+
+// число -> текст: калории целым числом, граммы с одной цифрой после запятой
+function formatValue(value, isKcal) {
+    if (value === null) {
+        return '—';
+    }
+    if (isKcal) {
+        return String(Math.round(value));
+    }
+    return String(Math.round(value * 10) / 10).replace('.', ',');
+}
+
+// достаёт из ответа нужные нам поля
+function readFood(product) {
+    const n = product.nutriments || {};
+    let kcal = null;
+    if (n['energy-kcal_100g'] !== undefined) {
+        kcal = Number(n['energy-kcal_100g']);
+    } else if (n['energy_100g'] !== undefined) {
+        kcal = Number(n['energy_100g']) / 4.184;   // кДж -> ккал
+    }
+
+    function value(key) {
+        if (n[key] === undefined || n[key] === '') {
+            return null;
+        }
+        return Number(n[key]);
+    }
+
+    return {
+        name: product.product_name_ru || product.product_name || '',
+        brand: product.brands || '',
+        kcal: kcal,
+        protein: value('proteins_100g'),
+        fat: value('fat_100g'),
+        carbs: value('carbohydrates_100g')
+    };
+}
+
+// ряд из четырёх плиток: ккал, белки, жиры, углеводы
+function createMacros(food, grams) {
+    const k = grams / 100;
+    const ul = document.createElement('ul');
+    ul.className = 'macros';
+
+    const items = [
+        ['ккал', food.kcal, true],
+        ['белки, г', food.protein, false],
+        ['жиры, г', food.fat, false],
+        ['углев., г', food.carbs, false]
+    ];
+
+    for (const item of items) {
+        const li = document.createElement('li');
+        const b = document.createElement('b');
+        b.textContent = formatValue(item[1] === null ? null : item[1] * k, item[2]);
+        li.append(b, item[0]);
+        ul.append(li);
+    }
+    return ul;
+}
+
+function showFoods() {
+    const list = document.querySelector('#food-list');
+    list.textContent = '';
+
+    let grams = Number(document.querySelector('#food-grams').value);
+    if (!(grams >= 1 && grams <= 2000)) {
+        grams = 100;
+    }
+
+    for (const food of foods) {
+        const li = document.createElement('li');
+        li.className = 'panel food';
+
+        const title = document.createElement('h3');
+        title.textContent = food.name;
+
+        const brand = document.createElement('p');
+        brand.className = 'muted';
+        brand.textContent = food.brand || 'Производитель не указан';
+
+        const t100 = document.createElement('p');
+        t100.className = 'macros-title';
+        t100.textContent = 'На 100 г';
+
+        const tPortion = document.createElement('p');
+        tPortion.className = 'macros-title';
+        tPortion.textContent = 'На порцию ' + grams + ' г';
+
+        li.append(title, brand, t100, createMacros(food, 100), tPortion, createMacros(food, grams));
+        list.append(li);
+    }
+}
+
+// ищет продукты в Open Food Facts
+// сайт иногда отвечает с ошибкой, поэтому пробуем по очереди:
+// русский сайт, международный сайт и в конце через наш сервер
+async function loadProducts(query) {
+    const params = '?search_terms=' + encodeURIComponent(query) +
+        '&search_simple=1&action=process&json=1&page_size=20' +
+        '&fields=product_name,product_name_ru,brands,nutriments';
+    const urls = [
+        'https://ru.openfoodfacts.org/cgi/search.pl' + params,
+        'https://world.openfoodfacts.org/cgi/search.pl' + params,
+        '/api/food?q=' + encodeURIComponent(query)
+    ];
+
+    for (const url of urls) {
+        try {
+            const response = await fetch(url);
+            if (response.ok) {
+                const data = await response.json();
+                return data.products || [];
+            }
+        } catch (error) {
+            console.log('Не получилось: ' + url, error);
+        }
+    }
+    throw new Error('Open Food Facts не отвечает');
+}
+
+async function searchFood() {
+    const query = document.querySelector('#food-search').value.trim();
+    const grams = document.querySelector('#food-grams').value;
+    const status = document.querySelector('#food-status');
+    let ok = true;
+
+    if (query.length < 2) {
+        showError('food-search', 'Введите название продукта (минимум 2 буквы)');
+        ok = false;
+    } else {
+        showError('food-search', '');
+    }
+
+    if (grams === '' || Number(grams) < 1 || Number(grams) > 2000) {
+        showError('food-grams', 'Порция от 1 до 2000 г');
+        ok = false;
+    } else {
+        showError('food-grams', '');
+    }
+
+    if (!ok) {
+        return;
+    }
+
+    foods = [];
+    showFoods();
+    status.textContent = 'Ищем продукты...';
+    status.classList.remove('is-hidden');
+
+    try {
+        const key = query.toLowerCase();
+        let products = foodCache[key];
+
+        if (!products) {
+            products = await loadProducts(query);
+            foodCache[key] = products;
+        }
+
+        for (const product of products) {
+            const food = readFood(product);
+            // берём только продукты с названием и хотя бы калориями или белками
+            if (food.name !== '' && (food.kcal !== null || food.protein !== null) && foods.length < 10) {
+                foods.push(food);
+            }
+        }
+
+        if (foods.length === 0) {
+            status.textContent = 'Ничего не найдено. Попробуйте другое название.';
+        } else {
+            status.textContent = 'Найдено продуктов: ' + foods.length;
+        }
+        showFoods();
+    } catch (error) {
+        console.log(error);
+        status.textContent = 'Не удалось загрузить данные о продуктах. Проверьте интернет или подождите минуту и попробуйте ещё раз.';
+    }
+}
+
+if (foodForm) {
+    foodForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        searchFood();
+    });
+
+    // быстрый поиск по кнопкам
+    for (const chip of document.querySelectorAll('[data-food]')) {
+        chip.addEventListener('click', function () {
+            document.querySelector('#food-search').value = chip.dataset.food;
+            searchFood();
+        });
+    }
+
+    // при изменении порции пересчитываем без нового запроса
+    document.querySelector('#food-grams').addEventListener('input', function () {
+        if (foods.length > 0) {
+            showFoods();
+        }
+    });
 }

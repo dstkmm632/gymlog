@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Подбор тренировки — GymLog</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="container header-inner">
+            <a href="index.html" class="logo"><img src="img/logo.svg" alt="GymLog — на главную" width="150" height="44"></a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="workout.html" class="active">Тренировка</a></li>
+                    <li><a href="diary.html">Дневник</a></li>
+                    <li><a href="nutrition.html">КБЖУ</a></li>
+                    <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="login.html" id="nav-login">Вход</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <h1>Подбор тренировки</h1>
+        <p class="lead">Выберите, что тренировать и сколько у вас времени. Сайт предложит упражнения, подходы, повторения и отдых.</p>
+
+        <div class="two-columns">
+            <section class="panel">
+                <h2>Параметры</h2>
+                <form id="workout-form" action="#" method="get" novalidate>
+                    <div class="field">
+                        <label for="workout-type">Что тренируем</label>
+                        <select id="workout-type" name="type">
+                            <option value="fullbody">Full body (всё тело)</option>
+                            <option value="legs">Ноги</option>
+                            <option value="chest">Грудь</option>
+                            <option value="back">Спина</option>
+                            <option value="shoulders">Плечи</option>
+                            <option value="arms">Руки</option>
+                            <option value="core">Пресс</option>
+                        </select>
+                    </div>
+                    <fieldset class="segmented">
+                        <legend>Время тренировки</legend>
+                        <input type="radio" id="time-30" name="minutes" value="30"><label for="time-30">30 мин</label>
+                        <input type="radio" id="time-45" name="minutes" value="45" checked><label for="time-45">45 мин</label>
+                        <input type="radio" id="time-60" name="minutes" value="60"><label for="time-60">60 мин</label>
+                        <input type="radio" id="time-90" name="minutes" value="90"><label for="time-90">90 мин</label>
+                    </fieldset>
+                    <button type="submit" class="btn btn-accent">Подобрать тренировку</button>
+                    <p class="result is-error" id="workout-error"></p>
+                </form>
+            </section>
+
+            <section class="panel">
+                <h2>Как подбирается тренировка</h2>
+                <ul>
+                    <li>30 минут — 3 упражнения по 3 подхода.</li>
+                    <li>45 минут — 4 упражнения по 3 подхода.</li>
+                    <li>60 минут — 5 упражнений по 4 подхода.</li>
+                    <li>90 минут — 7 упражнений по 4 подхода.</li>
+                    <li>Full body — по одному упражнению на каждую группу мышц.</li>
+                    <li>Тренировка на одну группу: сначала тяжёлые упражнения, потом лёгкие.</li>
+                    <li>Перед тренировкой разминка, после — заминка и растяжка.</li>
+                </ul>
+            </section>
+        </div>
+
+        <section class="panel is-hidden" id="workout-result">
+            <h2 id="workout-title">Ваша тренировка</h2>
+            <p class="muted" id="workout-summary"></p>
+            <p class="note is-hidden" id="workout-note"></p>
+            <p><b>Разминка:</b> 5 минут лёгкого кардио и суставная гимнастика.</p>
+            <ol class="workout-list" id="workout-list"></ol>
+            <p><b>Заминка:</b> 5 минут растяжки.</p>
+            <div class="buttons">
+                <button type="button" class="btn btn-outline" id="workout-again">Другой вариант</button>
+                <a href="diary.html" class="btn">Записать в дневник</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 GymLog — дневник тренировок. Учебный проект.</p>
+        </div>
+    </footer>
+</body>
+</html>

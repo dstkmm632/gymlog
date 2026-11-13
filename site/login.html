@@ -10,57 +10,65 @@
 <body>
     <header>
         <div class="container header-inner">
-            <a href="index.html"><img src="img/logo.svg" alt="GymLog — на главную" width="100" height="44"></a>
+            <a href="index.html" class="logo"><img src="img/logo.svg" alt="GymLog — на главную" width="150" height="44"></a>
             <nav>
                 <ul>
                     <li><a href="index.html">Главная</a></li>
                     <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="workout.html">Тренировка</a></li>
                     <li><a href="diary.html">Дневник</a></li>
+                    <li><a href="nutrition.html">КБЖУ</a></li>
                     <li><a href="contacts.html">Контакты</a></li>
-                    <li><a href="login.html" class="active">Вход</a></li>
+                    <li><a href="login.html" id="nav-login" class="active">Вход</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <main class="container">
+
         <h1>Вход</h1>
-        <p>Войдите, чтобы вести свой дневник тренировок. Если аккаунта ещё нет, зарегистрируйтесь.</p>
+        <p class="lead">Войдите, чтобы вести дневник и следить за силовыми. Если аккаунта ещё нет, зарегистрируйтесь.</p>
 
         <div class="two-columns">
-            <section>
+            <section class="panel">
                 <h2>Войти</h2>
                 <form id="login-form" action="#" method="post" novalidate>
-                    <label for="login-email">Почта</label>
-                    <input type="email" id="login-email" name="email" required aria-describedby="login-email-error">
-                    <p class="error" id="login-email-error"></p>
-
-                    <label for="login-password">Пароль</label>
-                    <input type="password" id="login-password" name="password" required aria-describedby="login-password-error">
-                    <p class="error" id="login-password-error"></p>
-
+                    <div class="field">
+                        <label for="login-email">Почта</label>
+                        <input type="email" id="login-email" name="email" required placeholder="ivan@mail.ru" aria-describedby="login-email-error">
+                        <p class="error" id="login-email-error"></p>
+                    </div>
+                    <div class="field">
+                        <label for="login-password">Пароль</label>
+                        <input type="password" id="login-password" name="password" required aria-describedby="login-password-error">
+                        <p class="error" id="login-password-error"></p>
+                    </div>
                     <button type="submit" class="btn">Войти</button>
-                    <p class="error" id="login-result"></p>
+                    <p class="result is-error" id="login-result"></p>
                 </form>
             </section>
 
-            <section>
+            <section class="panel">
                 <h2>Регистрация</h2>
                 <form id="register-form" action="#" method="post" novalidate>
-                    <label for="reg-name">Имя</label>
-                    <input type="text" id="reg-name" name="name" required aria-describedby="reg-name-error">
-                    <p class="error" id="reg-name-error"></p>
-
-                    <label for="reg-email">Почта</label>
-                    <input type="email" id="reg-email" name="email" required aria-describedby="reg-email-error">
-                    <p class="error" id="reg-email-error"></p>
-
-                    <label for="reg-password">Пароль (от 6 символов)</label>
-                    <input type="password" id="reg-password" name="password" required aria-describedby="reg-password-error">
-                    <p class="error" id="reg-password-error"></p>
-
-                    <button type="submit" class="btn">Зарегистрироваться</button>
-                    <p class="error" id="register-result"></p>
+                    <div class="field">
+                        <label for="reg-name">Имя</label>
+                        <input type="text" id="reg-name" name="name" required aria-describedby="reg-name-error">
+                        <p class="error" id="reg-name-error"></p>
+                    </div>
+                    <div class="field">
+                        <label for="reg-email">Почта (латиницей)</label>
+                        <input type="email" id="reg-email" name="email" required placeholder="ivan@mail.ru" aria-describedby="reg-email-error">
+                        <p class="error" id="reg-email-error"></p>
+                    </div>
+                    <div class="field">
+                        <label for="reg-password">Пароль (от 6 символов)</label>
+                        <input type="password" id="reg-password" name="password" required aria-describedby="reg-password-error">
+                        <p class="error" id="reg-password-error"></p>
+                    </div>
+                    <button type="submit" class="btn btn-accent">Зарегистрироваться</button>
+                    <p class="result is-error" id="register-result"></p>
                 </form>
             </section>
         </div>
@@ -68,7 +76,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 GymLog. Учебный проект.</p>
+            <p>&copy; 2026 GymLog — дневник тренировок. Учебный проект.</p>
         </div>
     </footer>
 </body>

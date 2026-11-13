@@ -10,51 +10,55 @@
 <body>
     <header>
         <div class="container header-inner">
-            <a href="index.html"><img src="img/logo.svg" alt="GymLog — на главную" width="100" height="44"></a>
+            <a href="index.html" class="logo"><img src="img/logo.svg" alt="GymLog — на главную" width="150" height="44"></a>
             <nav>
                 <ul>
                     <li><a href="index.html">Главная</a></li>
                     <li><a href="catalog.html" class="active">Каталог</a></li>
+                    <li><a href="workout.html">Тренировка</a></li>
                     <li><a href="diary.html">Дневник</a></li>
+                    <li><a href="nutrition.html">КБЖУ</a></li>
                     <li><a href="contacts.html">Контакты</a></li>
-                    <li><a href="login.html">Вход</a></li>
+                    <li><a href="login.html" id="nav-login">Вход</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <main class="container">
+
         <h1>Каталог упражнений</h1>
-        <p>Все упражнения, которые можно добавить в дневник.</p>
+        <p class="lead">Упражнения с техникой выполнения. Выберите группу мышц или найдите упражнение по названию.</p>
 
-        <form id="filter-form" class="filter" action="#" method="get">
-            <div>
-                <label for="search">Поиск</label>
-                <input type="search" id="search" name="search" placeholder="Название упражнения">
-            </div>
-            <div>
-                <label for="muscle">Группа мышц</label>
-                <select id="muscle" name="muscle">
-                    <option value="">Все</option>
-                    <option value="legs">Ноги</option>
-                    <option value="chest">Грудь</option>
-                    <option value="back">Спина</option>
-                    <option value="shoulders">Плечи</option>
-                    <option value="arms">Руки</option>
-                    <option value="core">Пресс</option>
-                </select>
-            </div>
-            <div>
-                <label for="sort">Сортировка</label>
-                <select id="sort" name="sort">
-                    <option value="name">По названию</option>
-                    <option value="level">По сложности</option>
-                </select>
-            </div>
-            <button type="submit" class="btn">Найти</button>
-        </form>
+        <section class="panel">
+            <form id="filter-form" class="filter" action="#" method="get">
+                <div class="field">
+                    <label for="search">Поиск</label>
+                    <input type="search" id="search" name="search" placeholder="Например, жим">
+                </div>
+                <div class="field">
+                    <label for="sort">Сортировка</label>
+                    <select id="sort" name="sort">
+                        <option value="name">По названию</option>
+                        <option value="level">По сложности</option>
+                    </select>
+                </div>
+            </form>
 
-        <h2>Все упражнения</h2>
+            <p class="filter-title" id="muscle-title">Группа мышц</p>
+            <ul class="chips" id="muscle-chips" aria-labelledby="muscle-title">
+                <li><button type="button" class="chip active" data-muscle="" aria-pressed="true">Все</button></li>
+                <li><button type="button" class="chip" data-muscle="legs" aria-pressed="false">Ноги</button></li>
+                <li><button type="button" class="chip" data-muscle="chest" aria-pressed="false">Грудь</button></li>
+                <li><button type="button" class="chip" data-muscle="back" aria-pressed="false">Спина</button></li>
+                <li><button type="button" class="chip" data-muscle="shoulders" aria-pressed="false">Плечи</button></li>
+                <li><button type="button" class="chip" data-muscle="arms" aria-pressed="false">Руки</button></li>
+                <li><button type="button" class="chip" data-muscle="core" aria-pressed="false">Пресс</button></li>
+            </ul>
+            <p id="workout-link-box" class="is-hidden"><a id="workout-link" href="workout.html" class="btn btn-accent btn-small">Подобрать тренировку на эту группу</a></p>
+        </section>
+
+        <h2 id="found-title">Все упражнения</h2>
         <p id="catalog-status">Загрузка упражнений...</p>
         <ul class="cards" id="exercise-list"></ul>
         <p id="nothing-found" class="is-hidden">Ничего не найдено. Попробуйте изменить поиск.</p>
@@ -62,7 +66,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 GymLog. Учебный проект.</p>
+            <p>&copy; 2026 GymLog — дневник тренировок. Учебный проект.</p>
         </div>
     </footer>
 </body>

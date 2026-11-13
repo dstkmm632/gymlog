@@ -10,40 +10,79 @@
 <body>
     <header>
         <div class="container header-inner">
-            <a href="index.html"><img src="img/logo.svg" alt="GymLog — на главную" width="100" height="44"></a>
+            <a href="index.html" class="logo"><img src="img/logo.svg" alt="GymLog — на главную" width="150" height="44"></a>
             <nav>
                 <ul>
                     <li><a href="index.html" class="active">Главная</a></li>
                     <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="workout.html">Тренировка</a></li>
                     <li><a href="diary.html">Дневник</a></li>
+                    <li><a href="nutrition.html">КБЖУ</a></li>
                     <li><a href="contacts.html">Контакты</a></li>
-                    <li><a href="login.html">Вход</a></li>
+                    <li><a href="login.html" id="nav-login">Вход</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <main class="container">
-        <h1>GymLog — дневник тренировок</h1>
-        <p>Здесь можно записывать свои тренировки: какие упражнения сделал, сколько подходов и с каким весом. А потом смотреть, как растут результаты.</p>
-        <p><a href="diary.html" class="btn">Добавить тренировку</a></p>
 
-        <section class="weather">
-            <h2>Погода в Санкт-Петербурге</h2>
-            <p id="weather-text">Загрузка погоды...</p>
+        <section class="hero">
+            <h1>Дневник тренировок GymLog</h1>
+            <p>Записывайте тренировки, следите за ростом силовых и подбирайте тренировку под свободное время.</p>
+            <div class="buttons">
+                <a href="workout.html" class="btn btn-accent">Подобрать тренировку</a>
+                <a href="diary.html" class="btn btn-light">Открыть дневник</a>
+            </div>
+        </section>
+
+        <ul class="features">
+            <li>
+                <section class="panel feature">
+                    <h2>Тренировка под ваше время</h2>
+                    <p>Выберите группу мышц или full body и сколько у вас времени. Сайт предложит упражнения, подходы и отдых.</p>
+                    <a href="workout.html">Подобрать тренировку</a>
+                </section>
+            </li>
+            <li>
+                <section class="panel feature">
+                    <h2>Рост силовых</h2>
+                    <p>Запишите, сколько поднимаете сейчас, а через месяц внесите новый результат и посмотрите разницу.</p>
+                    <a href="profile.html">Открыть профиль</a>
+                </section>
+            </li>
+            <li>
+                <section class="panel feature">
+                    <h2>КБЖУ продуктов</h2>
+                    <p>Узнайте, сколько калорий, белков, жиров и углеводов в продукте и в вашей порции.</p>
+                    <a href="nutrition.html">Посчитать КБЖУ</a>
+                </section>
+            </li>
+        </ul>
+
+        <section class="panel">
+            <h2>Упражнения по группам мышц</h2>
+            <ul class="chips">
+                <li><a class="chip" href="catalog.html?muscle=legs">Ноги</a></li>
+                <li><a class="chip" href="catalog.html?muscle=chest">Грудь</a></li>
+                <li><a class="chip" href="catalog.html?muscle=back">Спина</a></li>
+                <li><a class="chip" href="catalog.html?muscle=shoulders">Плечи</a></li>
+                <li><a class="chip" href="catalog.html?muscle=arms">Руки</a></li>
+                <li><a class="chip" href="catalog.html?muscle=core">Пресс</a></li>
+            </ul>
         </section>
 
         <section>
             <h2>Популярные упражнения</h2>
             <p id="popular-status">Загрузка упражнений...</p>
             <ul class="cards" id="popular-list"></ul>
-            <p><a href="catalog.html">Все упражнения</a></p>
+            <p><a href="catalog.html" class="btn btn-outline">Все упражнения</a></p>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 GymLog. Учебный проект.</p>
+            <p>&copy; 2026 GymLog — дневник тренировок. Учебный проект.</p>
         </div>
     </footer>
 </body>

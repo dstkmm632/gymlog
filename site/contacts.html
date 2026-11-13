@@ -10,51 +10,65 @@
 <body>
     <header>
         <div class="container header-inner">
-            <a href="index.html"><img src="img/logo.svg" alt="GymLog — на главную" width="100" height="44"></a>
+            <a href="index.html" class="logo"><img src="img/logo.svg" alt="GymLog — на главную" width="150" height="44"></a>
             <nav>
                 <ul>
                     <li><a href="index.html">Главная</a></li>
                     <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="workout.html">Тренировка</a></li>
                     <li><a href="diary.html">Дневник</a></li>
+                    <li><a href="nutrition.html">КБЖУ</a></li>
                     <li><a href="contacts.html" class="active">Контакты</a></li>
-                    <li><a href="login.html">Вход</a></li>
+                    <li><a href="login.html" id="nav-login">Вход</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <main class="container">
+
         <h1>Контакты</h1>
+        <p class="lead">Есть вопрос или предложение по сайту? Напишите нам.</p>
 
-        <address>
-            <p>Адрес: г. Санкт-Петербург, ул. Спортивная, д. 7</p>
-            <p>Телефон: <a href="tel:+78120000000">+7 (812) 000-00-00</a></p>
-            <p>Почта: <a href="mailto:gymlog@example.com">gymlog@example.com</a></p>
-        </address>
-        <p>Режим работы: пн–пт с 10:00 до 19:00, сб–вс выходной.</p>
+        <div class="two-columns">
+            <section class="panel">
+                <h2>Как с нами связаться</h2>
+                <address>
+                    <p>Адрес: г. Санкт-Петербург, ул. Спортивная, д. 7</p>
+                    <p>Телефон: <a href="tel:+78120000000">+7 (812) 000-00-00</a></p>
+                    <p>Почта: <a href="mailto:gymlog@example.com">gymlog@example.com</a></p>
+                </address>
+                <p>Режим работы: пн–пт с 10:00 до 19:00, сб–вс выходной.</p>
+            </section>
 
-        <h2>Обратная связь</h2>
-        <form id="feedback-form" action="#" method="post" novalidate>
-            <label for="name">Имя</label>
-            <input type="text" id="name" name="name" required aria-describedby="name-error">
-            <p class="error" id="name-error"></p>
-
-            <label for="email">Почта</label>
-            <input type="email" id="email" name="email" required aria-describedby="email-error">
-            <p class="error" id="email-error"></p>
-
-            <label for="message">Сообщение</label>
-            <textarea id="message" name="message" rows="5" required aria-describedby="message-error"></textarea>
-            <p class="error" id="message-error"></p>
-
-            <button type="submit" class="btn">Отправить</button>
-            <p class="result" id="feedback-result"></p>
-        </form>
+            <section class="panel">
+                <h2>Обратная связь</h2>
+                <form id="feedback-form" action="#" method="post" novalidate>
+                    <div class="field">
+                        <label for="name">Имя</label>
+                        <input type="text" id="name" name="name" required aria-describedby="name-error">
+                        <p class="error" id="name-error"></p>
+                    </div>
+                    <div class="field">
+                        <label for="email">Почта</label>
+                        <input type="email" id="email" name="email" required placeholder="ivan@mail.ru" aria-describedby="email-error">
+                        <p class="error" id="email-error"></p>
+                    </div>
+                    <div class="field">
+                        <label for="message">Сообщение</label>
+                        <textarea id="message" name="message" rows="5" required aria-describedby="message-error"></textarea>
+                        <p class="error" id="message-error"></p>
+                    </div>
+                    <button type="submit" class="btn btn-accent">Отправить</button>
+                    <p class="result" id="feedback-result"></p>
+                </form>
+            </section>
+        </div>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 GymLog. Учебный проект.</p>
+            <p>&copy; 2026 GymLog — дневник тренировок. Учебный проект.</p>
         </div>
     </footer>
 </body>

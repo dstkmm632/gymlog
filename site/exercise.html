@@ -10,42 +10,59 @@
 <body>
     <header>
         <div class="container header-inner">
-            <a href="index.html"><img src="img/logo.svg" alt="GymLog — на главную" width="100" height="44"></a>
+            <a href="index.html" class="logo"><img src="img/logo.svg" alt="GymLog — на главную" width="150" height="44"></a>
             <nav>
                 <ul>
                     <li><a href="index.html">Главная</a></li>
                     <li><a href="catalog.html" class="active">Каталог</a></li>
+                    <li><a href="workout.html">Тренировка</a></li>
                     <li><a href="diary.html">Дневник</a></li>
+                    <li><a href="nutrition.html">КБЖУ</a></li>
                     <li><a href="contacts.html">Контакты</a></li>
-                    <li><a href="login.html">Вход</a></li>
+                    <li><a href="login.html" id="nav-login">Вход</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <main class="container">
-        <p><a href="catalog.html">&larr; Назад в каталог</a></p>
+
+        <a href="catalog.html" class="back-link">&larr; Назад в каталог</a>
 
         <h1 id="exercise-name">Загрузка...</h1>
 
         <div id="exercise-info" class="is-hidden">
-            <div id="exercise-image"></div>
-            <p id="exercise-description"></p>
+            <p id="exercise-badges"></p>
 
-            <h2>Характеристики</h2>
-            <ul id="exercise-params"></ul>
+            <section class="panel exercise-top">
+                <div id="exercise-image"></div>
+                <div>
+                    <p id="exercise-description"></p>
+                    <h2>Характеристики</h2>
+                    <ul id="exercise-params"></ul>
+                    <div class="buttons">
+                        <a id="exercise-workout" href="workout.html" class="btn btn-accent">Тренировка на эту группу</a>
+                        <a href="profile.html" class="btn btn-outline">Записать свой результат</a>
+                    </div>
+                </div>
+            </section>
 
-            <h2>Техника выполнения</h2>
-            <ol id="exercise-steps"></ol>
-
-            <h2>Частые ошибки</h2>
-            <ul id="exercise-mistakes"></ul>
+            <div class="two-columns">
+                <section class="panel">
+                    <h2>Техника выполнения</h2>
+                    <ol id="exercise-steps"></ol>
+                </section>
+                <section class="panel">
+                    <h2>Частые ошибки</h2>
+                    <ul id="exercise-mistakes"></ul>
+                </section>
+            </div>
         </div>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 GymLog. Учебный проект.</p>
+            <p>&copy; 2026 GymLog — дневник тренировок. Учебный проект.</p>
         </div>
     </footer>
 </body>

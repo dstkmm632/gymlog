@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Профиль — GymLog</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="container header-inner">
+            <a href="index.html" class="logo"><img src="img/logo.svg" alt="GymLog — на главную" width="150" height="44"></a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="workout.html">Тренировка</a></li>
+                    <li><a href="diary.html">Дневник</a></li>
+                    <li><a href="nutrition.html">КБЖУ</a></li>
+                    <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="login.html" id="nav-login" class="active">Вход</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <h1>Профиль</h1>
+        <p id="profile-status">Загрузка...</p>
+
+        <!-- показывается, если пользователь не вошёл -->
+        <p id="profile-guest" class="panel is-hidden">Чтобы открыть профиль, <a href="login.html">войдите или зарегистрируйтесь</a>.</p>
+
+        <div id="profile-content" class="is-hidden">
+            <p id="profile-welcome" class="note is-hidden">Аккаунт создан! Заполните данные о себе и запишите свои силовые результаты.</p>
+
+            <div class="two-columns">
+                <section class="panel">
+                    <h2>Мои данные</h2>
+                    <p class="muted">Почта: <span id="profile-email"></span></p>
+                    <form id="profile-form" action="#" method="post" novalidate>
+                    <div class="field">
+                        <label for="profile-name">Имя</label>
+                        <input type="text" id="profile-name" name="name" required aria-describedby="profile-name-error">
+                        <p class="error" id="profile-name-error"></p>
+                    </div>
+                        <div class="form-row">
+                    <div class="field">
+                        <label for="profile-age">Возраст, лет</label>
+                        <input type="number" id="profile-age" name="age" min="10" max="100" aria-describedby="profile-age-error">
+                        <p class="error" id="profile-age-error"></p>
+                    </div>
+                    <div class="field">
+                        <label for="profile-height">Рост, см</label>
+                        <input type="number" id="profile-height" name="height" min="100" max="250" aria-describedby="profile-height-error">
+                        <p class="error" id="profile-height-error"></p>
+                    </div>
+                        </div>
+                    <div class="field">
+                        <label for="profile-weight">Вес, кг</label>
+                        <input type="number" id="profile-weight" name="weight" min="30" max="300" step="0.1" aria-describedby="profile-weight-error">
+                        <p class="error" id="profile-weight-error"></p>
+                    </div>
+                        <button type="submit" class="btn">Сохранить данные</button>
+                        <p class="result" id="profile-result"></p>
+                    </form>
+                </section>
+
+                <section class="panel" id="strength">
+                    <h2>Новый силовой результат</h2>
+                    <p class="muted">Укажите, какой вес и на сколько повторов вы сейчас поднимаете. Позже внесите новый результат — ниже будет видна разница.</p>
+                    <form id="strength-form" action="#" method="post" novalidate>
+                    <div class="field">
+                        <label for="st-exercise">Упражнение</label>
+                        <select id="st-exercise" name="exercise" required aria-describedby="st-exercise-error">
+                            <option value="">Выберите упражнение</option>
+                        </select>
+                        <p class="error" id="st-exercise-error"></p>
+                    </div>
+                    <div class="field">
+                        <label for="st-date">Дата</label>
+                        <input type="date" id="st-date" name="date" required aria-describedby="st-date-error">
+                        <p class="error" id="st-date-error"></p>
+                    </div>
+                        <div class="form-row">
+                    <div class="field">
+                        <label for="st-weight">Вес, кг (0 — свой вес)</label>
+                        <input type="number" id="st-weight" name="weight" min="0" max="500" step="0.5" required aria-describedby="st-weight-error">
+                        <p class="error" id="st-weight-error"></p>
+                    </div>
+                    <div class="field">
+                        <label for="st-reps">Повторы</label>
+                        <input type="number" id="st-reps" name="reps" min="1" max="100" required aria-describedby="st-reps-error">
+                        <p class="error" id="st-reps-error"></p>
+                    </div>
+                        </div>
+                        <button type="submit" class="btn btn-accent">Добавить результат</button>
+                        <p class="result" id="strength-result"></p>
+                    </form>
+                </section>
+            </div>
+
+            <section class="panel">
+                <h2>Мои силовые показатели</h2>
+                <p id="no-strength" class="is-hidden">Результатов пока нет. Добавьте первый результат в форме выше.</p>
+                <ul class="progress-list" id="progress-list"></ul>
+            </section>
+
+            <p><button type="button" class="btn btn-outline" id="logout-btn">Выйти из аккаунта</button></p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 GymLog — дневник тренировок. Учебный проект.</p>
+        </div>
+    </footer>
+</body>
+</html>

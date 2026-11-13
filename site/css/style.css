@@ -1,8 +1,18 @@
-/* Стили для всего сайта */
+/* Стили для всего сайта GymLog */
 
 :root {
-    --green: #1f6f50;
-    --text: #222222;
+    --navy-900: #0b1f3a;   /* шапка и подвал */
+    --navy-700: #16325c;   /* основные кнопки */
+    --navy-600: #1f4b8f;   /* ссылки */
+    --bg: #eef3fa;         /* фон страницы */
+    --line: #c4d0e1;       /* рамки */
+    --light: #dbe5f3;      /* светлые блоки */
+    --text: #15233b;
+    --muted: #55627a;
+    --accent: #f97316;     /* оранжевый акцент */
+    --accent-dark: #ea580c;
+    --error: #c62828;
+    --success: #1e7a46;
 }
 
 * {
@@ -11,10 +21,11 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.5;
     color: var(--text);
+    background-color: var(--bg);
 }
 
 img {
@@ -23,84 +34,269 @@ img {
 }
 
 a {
-    color: var(--green);
+    color: var(--navy-600);
 }
 
 :focus-visible {
-    outline: 3px solid orange;
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .container {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 0 15px;
+    padding: 0 16px;
 }
 
 h1 {
+    margin: 0 0 8px;
     font-size: 1.8rem;
+    line-height: 1.2;
 }
 
 h2 {
-    font-size: 1.4rem;
-    margin-top: 30px;
+    margin: 0 0 14px;
+    font-size: 1.3rem;
 }
 
 h3 {
-    font-size: 1.1rem;
-    margin: 10px 0 5px;
+    margin: 0 0 6px;
+    font-size: 1.05rem;
 }
 
-/* шапка */
+.lead {
+    margin: 0 0 24px;
+    color: var(--muted);
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.is-hidden {
+    display: none !important;
+}
+
+/* ===== шапка ===== */
+
 header {
-    padding: 10px 0;
-    border-bottom: 2px solid var(--green);
+    background-color: var(--navy-900);
 }
 
 .header-inner {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+    padding-top: 12px;
+    padding-bottom: 4px;
+}
+
+.logo {
+    display: inline-block;
+    line-height: 0;
 }
 
 nav ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 0 18px;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
 nav a {
-    color: var(--text);
-    font-weight: bold;
+    display: block;
+    padding: 8px 0;
+    border-bottom: 3px solid transparent;
+    color: var(--light);
+    font-weight: 600;
     text-decoration: none;
 }
 
-nav a:hover,
-nav a.active {
-    color: var(--green);
-    text-decoration: underline;
+nav a:hover {
+    color: white;
 }
 
-/* кнопка */
+nav a.active {
+    color: white;
+    border-bottom-color: var(--accent);
+}
+
+/* ===== основная часть ===== */
+
+/* main.container, а не просто main: иначе отступы перебивает правило .container */
+main.container {
+    padding-top: 28px;
+    padding-bottom: 20px;
+}
+
+/* белый блок с содержимым */
+.panel {
+    margin-bottom: 24px;
+    padding: 18px 16px;
+    background-color: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(11, 31, 58, 0.08);
+}
+
+/* ===== кнопки ===== */
+
 .btn {
     display: inline-block;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: var(--green);
+    padding: 12px 22px;
+    border: 2px solid var(--navy-700);
+    border-radius: 10px;
+    background-color: var(--navy-700);
     color: white;
     font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    text-align: center;
     text-decoration: none;
     cursor: pointer;
 }
 
 .btn:hover {
-    background-color: #17573f;
+    background-color: var(--navy-900);
+    border-color: var(--navy-900);
 }
 
-/* карточки упражнений */
+/* оранжевая кнопка для главных действий */
+.btn-accent {
+    border-color: var(--accent);
+    background-color: var(--accent);
+    color: var(--navy-900);
+}
+
+.btn-accent:hover {
+    border-color: var(--accent-dark);
+    background-color: var(--accent-dark);
+    color: var(--navy-900);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--navy-700);
+}
+
+.btn-outline:hover {
+    color: white;
+}
+
+/* белая обводка на тёмном фоне */
+.btn-light {
+    border-color: white;
+    background-color: transparent;
+    color: white;
+}
+
+.btn-light:hover {
+    background-color: white;
+    border-color: white;
+    color: var(--navy-900);
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+}
+
+/* кнопка-ссылка, например «Удалить» */
+.link-btn {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--error);
+    font-size: 0.9rem;
+    font-family: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* ===== главная ===== */
+
+.hero {
+    margin-bottom: 24px;
+    padding: 32px 24px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--navy-900), var(--navy-600));
+    color: white;
+}
+
+.hero h1 {
+    font-size: 2rem;
+}
+
+.hero p {
+    max-width: 600px;
+    margin: 0 0 22px;
+    color: var(--light);
+}
+
+.features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 0 0 24px;
+    padding: 0;
+    list-style: none;
+}
+
+.feature {
+    height: 100%;
+    margin: 0;
+    border-top: 4px solid var(--accent);
+}
+
+.feature p {
+    margin: 0 0 14px;
+    color: var(--muted);
+}
+
+/* ===== кнопки групп мышц ===== */
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.chip {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    background-color: white;
+    color: var(--navy-700);
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.chip:hover {
+    border-color: var(--navy-700);
+}
+
+.chip.active {
+    border-color: var(--navy-700);
+    background-color: var(--navy-700);
+    color: white;
+}
+
+/* ===== карточки упражнений ===== */
+
 .cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -112,128 +308,510 @@ nav a.active {
 
 .card {
     height: 100%;
-    padding: 10px;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
+    overflow: hidden;
+    background-color: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(11, 31, 58, 0.08);
+}
+
+.card img {
+    display: block;
+    width: 100%;
+}
+
+.card-body {
+    padding: 14px 16px 16px;
+}
+
+.card h3 a {
+    color: var(--navy-700);
+    text-decoration: none;
+}
+
+.card h3 a:hover {
+    text-decoration: underline;
 }
 
 .card p {
-    margin: 5px 0;
+    margin: 0 0 10px;
+    color: var(--muted);
+    font-size: 0.95rem;
 }
 
-.card-info {
-    color: #555555;
-    font-size: 0.9rem;
+.badge {
+    display: inline-block;
+    margin: 0 6px 4px 0;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background-color: var(--light);
+    color: var(--navy-700);
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
-/* формы */
+/* ===== формы ===== */
+
 form {
-    max-width: 500px;
+    max-width: 520px;
+}
+
+.field {
+    margin-bottom: 14px;
 }
 
 label {
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
 }
 
 input,
 select,
 textarea {
     width: 100%;
-    margin-bottom: 15px;
-    padding: 8px;
-    border: 1px solid #777777;
-    border-radius: 4px;
+    min-height: 46px;
+    padding: 10px 14px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
     background-color: white;
+    color: var(--text);
     font-size: 1rem;
     font-family: inherit;
 }
 
-/* ошибки в формах */
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--navy-600);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.35);
+}
+
+/* свой вид выпадающего списка: стрелка отодвинута от края */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 46px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%2316325c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 14px 9px;
+    cursor: pointer;
+}
+
+input.has-error,
+select.has-error,
+textarea.has-error {
+    border-color: var(--error);
+}
+
 .error {
-    margin: -10px 0 10px;
-    color: #b00020;
+    min-height: 0;
+    margin: 4px 0 0;
+    color: var(--error);
     font-size: 0.9rem;
+}
+
+.error:empty {
+    margin: 0;
 }
 
 .result {
-    color: var(--green);
-    font-weight: bold;
+    margin: 12px 0 0;
+    color: var(--success);
+    font-weight: 600;
 }
 
-.is-hidden {
-    display: none;
+.result.is-error {
+    color: var(--error);
 }
 
-/* погода на главной */
-.weather {
-    margin: 20px 0;
-    padding: 1px 15px;
-    background-color: #f2f2f2;
-    border-radius: 5px;
+/* несколько полей в одну строку */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 14px;
 }
 
-/* фильтр в каталоге */
+form .btn {
+    width: 100%;
+    margin-top: 6px;
+}
+
+/* ===== фильтр в каталоге ===== */
+
 .filter {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 0 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 14px;
     max-width: none;
-    margin-bottom: 25px;
-    padding: 15px 15px 0;
-    background-color: #f2f2f2;
-    border-radius: 5px;
 }
 
-.filter div {
-    flex: 1 1 200px;
+.filter .field {
+    margin-bottom: 14px;
 }
 
-.filter .btn {
-    margin-bottom: 15px;
+/* поиск продукта: поле, порция и кнопка */
+.search-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 14px;
+    max-width: none;
 }
 
-/* страница упражнения */
+.search-row .btn {
+    margin-top: 0;
+}
+
+.filter-title {
+    margin: 4px 0 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* ===== страница упражнения ===== */
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 14px;
+    font-weight: 600;
+}
+
+.exercise-top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
 .exercise-img {
     display: block;
     width: 100%;
-    max-width: 500px;
-    border-radius: 5px;
+    border-radius: 12px;
 }
 
-/* дневник и вход */
+.exercise-top ul {
+    padding-left: 20px;
+}
+
+.panel ol,
+.panel ul {
+    margin-top: 0;
+}
+
+/* ===== таблицы ===== */
+
+.table-wrap {
+    overflow-x: auto;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 th,
 td {
-    padding: 4px;
-    border: 1px solid #cccccc;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--light);
     text-align: left;
 }
 
 th {
-    background-color: #eeeeee;
-}
-
-/* подвал */
-footer {
-    margin-top: 40px;
-    padding: 10px 0;
-    background-color: #eeeeee;
+    background-color: var(--bg);
+    color: var(--navy-700);
     font-size: 0.9rem;
 }
 
-/* для экранов пошире */
+/* ===== итоги (дневник, профиль) ===== */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.stats li {
+    padding: 12px 8px;
+    border-radius: 12px;
+    background-color: var(--bg);
+    text-align: center;
+}
+
+.stats b {
+    display: block;
+    color: var(--navy-700);
+    font-size: 1.5rem;
+}
+
+.stats span {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+/* ===== подбор тренировки ===== */
+
+/* выбор времени: радиокнопки в виде кнопок */
+.segmented {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 14px;
+    padding: 0;
+    border: none;
+}
+
+.segmented legend {
+    width: 100%;
+    margin-bottom: 6px;
+    padding: 0;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.segmented input {
+    position: absolute;
+    width: 1px;
+    min-height: 0;
+    height: 1px;
+    opacity: 0;
+}
+
+.segmented label {
+    margin: 0;
+    padding: 10px 18px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background-color: white;
+    color: var(--navy-700);
+    cursor: pointer;
+}
+
+.segmented input:checked + label {
+    border-color: var(--navy-700);
+    background-color: var(--navy-700);
+    color: white;
+}
+
+.segmented input:focus-visible + label {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.workout-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+}
+
+.workout-item {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--light);
+}
+
+.workout-item img {
+    border-radius: 8px;
+}
+
+.workout-item h3 {
+    margin-bottom: 4px;
+}
+
+.workout-item p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.workout-sets {
+    color: var(--text) !important;
+    font-weight: 600;
+}
+
+.note {
+    padding: 10px 14px;
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    background-color: #fff4ea;
+}
+
+/* ===== КБЖУ ===== */
+
+.food-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.food-list .panel {
+    margin-bottom: 0;
+}
+
+.food h3 {
+    margin-bottom: 2px;
+}
+
+.food p {
+    margin: 0 0 10px;
+}
+
+.macros {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin: 0 0 8px;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+}
+
+.macros li {
+    padding: 8px 4px;
+    border-radius: 10px;
+    background-color: var(--bg);
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.macros b {
+    display: block;
+    color: var(--navy-700);
+    font-size: 1.05rem;
+}
+
+.macros-title {
+    margin: 0 0 4px !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* ===== силовые показатели ===== */
+
+.progress-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.progress-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--light);
+}
+
+.progress-item p {
+    margin: 0 0 6px;
+}
+
+.diff {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background-color: var(--light);
+    color: var(--navy-700);
+    font-weight: 700;
+}
+
+.diff.up {
+    background-color: #e3f4ea;
+    color: var(--success);
+}
+
+.diff.down {
+    background-color: #fdeaea;
+    color: var(--error);
+}
+
+details summary {
+    color: var(--navy-600);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+details table {
+    margin-top: 8px;
+}
+
+/* ===== контакты ===== */
+
+address {
+    font-style: normal;
+}
+
+address p {
+    margin: 0 0 6px;
+}
+
+/* ===== подвал ===== */
+
+footer {
+    margin-top: 20px;
+    padding: 18px 0;
+    background-color: var(--navy-900);
+    color: var(--light);
+    font-size: 0.9rem;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* ===== экраны пошире ===== */
+
 @media (min-width: 600px) {
+    .panel {
+        padding: 20px;
+    }
+
     .header-inner {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        padding-bottom: 0;
+    }
+
+    .hero {
+        padding: 44px 40px;
+    }
+
+    .hero h1 {
+        font-size: 2.4rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    form .btn {
+        width: auto;
+    }
+
+    .filter {
+        grid-template-columns: 2fr 1fr;
+    }
+
+    .food-list {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .search-row {
+        grid-template-columns: 2fr 1fr auto;
+        align-items: start;
+    }
+
+    .search-row .btn {
+        margin-top: 30px;
     }
 }
 
@@ -241,6 +819,16 @@ footer {
     .two-columns {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 40px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    .features {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .exercise-top {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
     }
 }

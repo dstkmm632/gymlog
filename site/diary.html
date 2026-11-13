@@ -10,88 +10,104 @@
 <body>
     <header>
         <div class="container header-inner">
-            <a href="index.html"><img src="img/logo.svg" alt="GymLog — на главную" width="100" height="44"></a>
+            <a href="index.html" class="logo"><img src="img/logo.svg" alt="GymLog — на главную" width="150" height="44"></a>
             <nav>
                 <ul>
                     <li><a href="index.html">Главная</a></li>
                     <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="workout.html">Тренировка</a></li>
                     <li><a href="diary.html" class="active">Дневник</a></li>
+                    <li><a href="nutrition.html">КБЖУ</a></li>
                     <li><a href="contacts.html">Контакты</a></li>
-                    <li><a href="login.html">Вход</a></li>
+                    <li><a href="login.html" id="nav-login">Вход</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <main class="container">
+
         <h1>Мой дневник</h1>
+        <p class="lead">Записывайте каждую тренировку: упражнение, подходы, повторы и вес.</p>
         <p id="diary-status">Загрузка...</p>
 
         <!-- показывается, если пользователь не вошёл -->
-        <p id="diary-guest" class="is-hidden">Чтобы вести дневник, <a href="login.html">войдите или зарегистрируйтесь</a>.</p>
+        <p id="diary-guest" class="panel is-hidden">Чтобы вести дневник, <a href="login.html">войдите или зарегистрируйтесь</a>.</p>
 
         <!-- показывается после входа -->
         <div id="diary-content" class="is-hidden">
             <div class="two-columns">
-                <section>
+                <section class="panel">
                     <h2>Новая запись</h2>
                     <form id="diary-form" action="#" method="post" novalidate>
+                    <div class="field">
                         <label for="date">Дата</label>
                         <input type="date" id="date" name="date" required aria-describedby="date-error">
                         <p class="error" id="date-error"></p>
-
+                    </div>
+                    <div class="field">
                         <label for="exercise">Упражнение</label>
                         <select id="exercise" name="exercise" required aria-describedby="exercise-error">
                             <option value="">Выберите упражнение</option>
                         </select>
                         <p class="error" id="exercise-error"></p>
-
+                    </div>
+                        <div class="form-row">
+                    <div class="field">
                         <label for="sets">Подходы</label>
                         <input type="number" id="sets" name="sets" min="1" max="10" required aria-describedby="sets-error">
                         <p class="error" id="sets-error"></p>
-
+                    </div>
+                    <div class="field">
                         <label for="reps">Повторы</label>
                         <input type="number" id="reps" name="reps" min="1" max="50" required aria-describedby="reps-error">
                         <p class="error" id="reps-error"></p>
-
+                    </div>
+                        </div>
+                    <div class="field">
                         <label for="weight">Вес, кг</label>
                         <input type="number" id="weight" name="weight" min="0" max="500" step="0.5" aria-describedby="weight-error">
                         <p class="error" id="weight-error"></p>
-
-                        <button type="submit" class="btn">Сохранить</button>
+                    </div>
+                        <button type="submit" class="btn btn-accent">Сохранить</button>
                         <p class="result" id="diary-result"></p>
                     </form>
                 </section>
 
-                <section>
+                <section class="panel">
                     <h2>Итог за 7 дней</h2>
-                    <ul>
-                        <li>Тренировок: <span id="sum-workouts">0</span></li>
-                        <li>Подходов: <span id="sum-sets">0</span></li>
-                        <li>Поднято всего: <span id="sum-weight">0</span> кг</li>
+                    <ul class="stats">
+                        <li><b id="sum-workouts">0</b><span>тренировок</span></li>
+                        <li><b id="sum-sets">0</b><span>подходов</span></li>
+                        <li><b id="sum-weight">0</b><span>кг поднято</span></li>
                     </ul>
+                    <p class="muted">Поднятый вес считается так: подходы × повторы × вес.</p>
+                    <a href="workout.html" class="btn btn-outline">Подобрать тренировку</a>
                 </section>
             </div>
 
-            <h2>Мои записи</h2>
-            <p id="no-records" class="is-hidden">Записей пока нет. Добавьте первую тренировку.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Дата</th>
-                        <th>Упражнение</th>
-                        <th>Подходы × повторы</th>
-                        <th>Вес</th>
-                    </tr>
-                </thead>
-                <tbody id="records"></tbody>
-            </table>
+            <section class="panel">
+                <h2>Мои записи</h2>
+                <p id="no-records" class="is-hidden">Записей пока нет. Добавьте первую тренировку.</p>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Упражнение</th>
+                                <th>Результат</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records"></tbody>
+                    </table>
+                </div>
+            </section>
         </div>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 GymLog. Учебный проект.</p>
+            <p>&copy; 2026 GymLog — дневник тренировок. Учебный проект.</p>
         </div>
     </footer>
 </body>
