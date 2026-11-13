@@ -27,7 +27,11 @@
     box-sizing: border-box;
 }
 
+/* страница не ниже окна браузера, чтобы подвал всегда был внизу */
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     margin: 0;
     font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     font-size: 1rem;
@@ -136,6 +140,8 @@ nav a.active {
 
 /* main.container, а не просто main: иначе отступы перебивает правило .container */
 main.container {
+    flex: 1;          /* main занимает всё свободное место и отодвигает подвал вниз */
+    width: 100%;
     padding-top: 28px;
     padding-bottom: 20px;
 }
