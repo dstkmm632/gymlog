@@ -1191,9 +1191,12 @@ function readFood(product) {
         return Number(n[key]);
     }
 
+    // название бывает пустым или из одних пробелов, тогда берём другое
+    const name = (product.product_name_ru || '').trim() || (product.product_name || '').trim();
+
     return {
-        name: product.product_name_ru || product.product_name || '',
-        brand: product.brands || '',
+        name: name,
+        brand: (product.brands || '').trim(),
         kcal: kcal,
         protein: value('proteins_100g'),
         fat: value('fat_100g'),
